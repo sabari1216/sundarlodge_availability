@@ -41,18 +41,22 @@
     <button id="resetButton">Reset All</button>
 
     <script>
-        const pusher = new Pusher('9d06a8ff493ae6fa7fc2', {
-        cluster: 'ap2',
-        // Add other options if needed
-    });
+        const pusher = new Pusher({
+    appId: '1751600',
+    key: '9d06a8ff493ae6fa7fc2',
+    secret: 'a445219bfa48fdad98a0',
+    cluster: 'ap2',
+    useTLS: true,
+    encrypted: true,
+});
         document.addEventListener('DOMContentLoaded', function() {
             const rooms = document.querySelectorAll('.room-card');
             const resetButton = document.getElementById('resetButton');
 
             // Use a unique channel name to simulate privacy
-            const uniqueChannelName = 'room-status-' + Math.random().toString(36).substring(7);
-            const channel = pusher.subscribe(uniqueChannelName);
-
+            //const uniqueChannelName = 'room-status-' + Math.random().toString(36).substring(7);
+            //const channel = pusher.subscribe(uniqueChannelName);
+            const channel = pusher.subscribe('private-room-status');
             // Listen for updates on the "client-room-update" event
             channel.bind('client-room-status', function(data) {
                 // Update the room status based on the received data
