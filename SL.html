@@ -1,18 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SUNDAR LODGE</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Availability - Your Lodge Name</title>
+    <link rel="stylesheet" href="/sundarlodge_availability/styles.css">
 </head>
 <body>
-  <h1>SUNDAR LODGE</h1>
+    <h1>SUNDAR LODGE</h1>
 
-  <div class="room-cards-container" id="roomCardsContainer">
-    <!-- Room cards will be dynamically added here -->
-  </div>
+    <div class="room-cards-container">
+        <div class="room-card" id="room101">101</div>
+        <div class="room-card" id="room102">102</div>
+        <div class="room-card" id="room103">103</div>
+        <div class="room-card" id="room104">104</div>
+        <div class="room-card" id="room105">105</div>
+        <div class="room-card" id="room106">106</div>
+        <div class="room-card" id="room107">107</div>
+        <div class="room-card" id="room108">108</div>
+        <div class="room-card" id="room201">201</div>
+        <div class="room-card" id="room202">202</div>
+        <div class="room-card" id="room203">203</div>
+        <div class="room-card" id="room204">204</div>
+        <div class="room-card" id="room205">205</div>
+        <div class="room-card" id="room206">206</div>
+        <div class="room-card" id="room207">207</div>
+        <div class="room-card" id="room208">208</div>
+        <div class="room-card" id="room301">301</div>
+        <div class="room-card" id="room302">302</div>
+        <div class="room-card" id="room303">303</div>
+        <div class="room-card" id="room304">304</div>
+        <div class="room-card" id="room305">305</div>
+        <div class="room-card" id="room306">306</div>
+        <div class="room-card" id="room307">307</div>
+        <div class="room-card" id="room308">308</div>
+        
+        <!-- Add more room cards as needed -->
+    </div>
 
-  <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rooms = document.querySelectorAll('.room-card');
+
+            rooms.forEach(room => {
+                room.addEventListener('click', function() {
+                    if (!room.classList.contains('booked')) {
+                        room.classList.add('booked');
+                    } else {
+                        room.classList.remove('booked');
+                    }
+
+                    // Store the room availability in local storage
+                    localStorage.setItem(room.id, room.classList.contains('booked'));
+                });
+
+                // Retrieve the room availability from local storage on page load
+                const isBooked = localStorage.getItem(room.id) === 'true';
+                if (isBooked) {
+                    room.classList.add('booked');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
