@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Availability - Your Lodge Name</title>
-    <link rel="stylesheet" href="/sundarlodge_availability/styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 </head>
 <body>
     <h1>SUNDAR LODGE</h1>
@@ -34,24 +35,39 @@
         <div class="room-card" id="room306">306</div>
         <div class="room-card" id="room307">307</div>
         <div class="room-card" id="room308">308</div>
-        
-        <!-- Add more room cards as needed -->
+        <!-- Add other room cards as needed -->
     </div>
 
+    <button id="resetButton">Reset All</button>
+
     <script>
+        const pusher = new Pusher('9d06a8ff493ae6fa7fc2', {
+        cluster: 'ap2',
+        // Add other options if needed
+    });
         document.addEventListener('DOMContentLoaded', function() {
             const rooms = document.querySelectorAll('.room-card');
+            const resetButton = document.getElementById('resetButton');
+
+            // Use a unique channel name to simulate privacy
+            const uniqueChannelName = 'room-status-' + Math.random().toString(36).substring(7);
+            const channel = pusher.subscribe(uniqueChannelName);
+
+            // Listen for updates on the "client-room-update" event
+            channel.bind('client-room-status', function(data) {
+                // Update the room status based on the received data
+                const room = document.getElementById(data.roomId);
+
+                if (data.isBooked) {
+                    room.classList.add('booked');
+                } else {
+                    room.classList.remove('booked');
+                }
+            });
 
             rooms.forEach(room => {
                 room.addEventListener('click', function() {
-                    if (!room.classList.contains('booked')) {
-                        room.classList.add('booked');
-                    } else {
-                        room.classList.remove('booked');
-                    }
-
-                    // Store the room availability in local storage
-                    localStorage.setItem(room.id, room.classList.contains('booked'));
+                    toggleRoomStatus(room);
                 });
 
                 // Retrieve the room availability from local storage on page load
@@ -60,6 +76,36 @@
                     room.classList.add('booked');
                 }
             });
+
+            resetButton.addEventListener('click', function() {
+                rooms.forEach(room => {
+                    room.classList.remove('booked');
+                    localStorage.setItem(room.id, 'false');
+
+                    // Trigger a client event to notify others
+                    channel.trigger('client-room-status', {
+                        roomId: room.id,
+                        isBooked: false,
+                    });
+                });
+            });
+
+            function toggleRoomStatus(room) {
+                if (!room.classList.contains('booked')) {
+                    room.classList.add('booked');
+                } else {
+                    room.classList.remove('booked');
+                }
+
+                // Store the room availability in local storage
+                localStorage.setItem(room.id, room.classList.contains('booked'));
+
+                // Trigger a client event to notify others
+                channel.trigger('client-room-status', {
+                    roomId: room.id,
+                    isBooked: room.classList.contains('booked'),
+                });
+            }
         });
     </script>
 </body>

@@ -43,3 +43,19 @@ h1 {
         width: calc(50% - 20px);
     }
 }
+
+#resetButton {
+    display: block;
+    margin: 20px auto; /* Center the button */
+    padding: 10px 20px;
+    background-color: #e21829; /* Red color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#resetButton:hover {
+    background-color: #c20523; /* Darker red on hover */
+}
